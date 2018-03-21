@@ -4,8 +4,6 @@
 public class ClientApp {
 
     public static void main(String[] args) {
-        ChatClient chatClient = new ChatClient();
-        chatClient.connect();
-        chatClient.run();
+        ChatClientPanel chatClient = new ChatClientPanel();
     }
 }
