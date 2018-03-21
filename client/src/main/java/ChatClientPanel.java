@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,6 +25,7 @@ public class ChatClientPanel extends JPanel {
     private JMenuItem menuItem;
     private ClientConnectionThread clientConnectionThread;
     private boolean isOnline;
+    private static Logger logger = LoggerFactory.getLogger(ChatClientPanel.class);
 
     public ChatClientPanel() {
         createAndShowGui();
@@ -114,7 +118,6 @@ public class ChatClientPanel extends JPanel {
     }
 
     private class ClientConnectionThread implements Runnable {
-
         private Socket socket;
         private BufferedReader bufferedReader;
         private OutputStream outputStream;
@@ -125,6 +128,7 @@ public class ChatClientPanel extends JPanel {
                 bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 outputStream = socket.getOutputStream();
             } catch (IOException exception) {
+                logger.error("Error connecting to chat server.");
             }
         }
 
@@ -138,7 +142,7 @@ public class ChatClientPanel extends JPanel {
                     });
                 }
             } catch (Exception exception) {
-
+                logger.error("Error reading data in from chat server.");
             }
         }
 
@@ -146,7 +150,7 @@ public class ChatClientPanel extends JPanel {
             try {
                 outputStream.write(message.getBytes());
             } catch (IOException exception) {
-
+                logger.error("Error writing data out to chat server.");
             }
         }
     }
