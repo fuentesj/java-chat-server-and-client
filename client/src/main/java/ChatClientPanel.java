@@ -77,19 +77,40 @@ public class ChatClientPanel extends JPanel {
             serverOptionsPanel.add(hostField);
 
             String host = JOptionPane.showInputDialog(serverOptionsPanel, "Enter server location.");
-            String[] hostArray = host.split(":");
-            clientConnectionThread = new ClientConnectionThread(hostArray[0], hostArray[1]);
-            if (clientConnectionThread != null) {
-                isOnline = true;
-                SwingUtilities.invokeLater(() -> {
-                    inputTextArea.setEditable(true);
-                });
+            if (host != null && !"".equals(host) && checkIfValidIP(host)) {
+                String[] hostArray = host.split(":");
+                clientConnectionThread = new ClientConnectionThread(hostArray[0], hostArray[1]);
+                if (clientConnectionThread != null) {
+                    isOnline = true;
+                    SwingUtilities.invokeLater(() -> {
+                        inputTextArea.setEditable(true);
+                    });
+                }
+                Thread thread = new Thread(clientConnectionThread);
+                thread.start();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please enter a valid URL.", "Invalid URL", JOptionPane.ERROR_MESSAGE);
             }
-            Thread thread = new Thread(clientConnectionThread);
-            thread.start();
+
         });
         menu.add(menuItem);
         frame.setJMenuBar(menuBar);
+    }
+
+    private boolean checkIfValidIP(String host) {
+        String[] hostArray = host.split(":");
+        String[] ipArray = hostArray[0].split("\\.");
+        if (ipArray.length == 4) {
+            for (int index = 0; index < ipArray.length; index++) {
+                int currentOctet = Integer.parseInt(ipArray[index]);
+                if (currentOctet < 0 || 255 < currentOctet) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private class ClientConnectionThread implements Runnable {
