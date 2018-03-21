@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDateTime;
@@ -15,6 +18,7 @@ public class ChatServerThread implements Runnable {
     private UUID socketID;
     private BufferedReader bufferedReader;
     private String userName;
+    private static Logger logger = LoggerFactory.getLogger(ChatServerThread.class);
 
     public ChatServerThread(Map<UUID, Socket> socketMap, UUID socketID, String userName) {
         this.socketMap = Objects.requireNonNull(socketMap, "socketMap cannot be null.");
@@ -39,7 +43,7 @@ public class ChatServerThread implements Runnable {
                 }
             }
         } catch (IOException exception) {
-            System.out.println("Connection failed: " + socketID);
+            logger.error("Error establishing connection to chat server.");
         }
     }
 }

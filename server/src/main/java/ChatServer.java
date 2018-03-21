@@ -1,3 +1,6 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,6 +23,7 @@ public class ChatServer {
     private Set<String> userSet;
     private UserNameGenerator userNameGenerator;
     private ServerSocket serverSocket;
+    private static Logger logger = LoggerFactory.getLogger(ChatServer.class);
 
     public ChatServer() {
         executorService = Executors.newFixedThreadPool(10);
@@ -43,7 +47,7 @@ public class ChatServer {
                 executorService.submit(new ChatServerThread(socketMap, socketID, userName));
             }
         } catch (IOException exception) {
-            System.out.println("The server failed to start: " + exception.getMessage());
+            logger.error("The server failed to start");
         }
     }
 }
